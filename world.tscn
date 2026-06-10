@@ -1,0 +1,43 @@
+[gd_scene format=4 uid="uid://5o2jdc76ry45"]
+
+[ext_resource type="Script" uid="uid://dysba1r4v7hf4" path="res://Main.cs" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://cwu5cf7a0awcd" path="res://addons/func_godot/src/map/func_godot_map.gd" id="2_aqk2v"]
+[ext_resource type="Resource" uid="uid://bmng1152gkgc2" path="res://Trenchbroom/godo_shooter_settings.tres" id="3_036b0"]
+[ext_resource type="Material" uid="uid://cybu8v8fjileg" path="res://Trenchbroom/Textures/Bricks/Bricks_01-512x512.tres" id="4_aqk2v"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_036b0"]
+lightmap_size_hint = Vector2i(106, 138)
+_surfaces = [{
+"aabb": AABB(-2, -0.5, -2, 4, 1, 4),
+"attribute_data": PackedByteArray("AAAgwAAAIL/eyn4/jRJ/PwAAIEAAACC/3sp+PyV+Bj8AACBAAAAgP2G8VT8lfgY/AAAgwAAAID9hvFU/jRJ/PwAAIEAAACA/3sp+P3PtAD8AACDAAAAgP97Kfj+ykAU9AAAgwAAAIL9hvFU/spAFPQAAIEAAACC/YbxVP3PtAD8AACDAAAAgQE0wHj+2A/M+AAAgwAAAIMDokJo7tgPzPgAAIEAAACDA6JCaOwRzbTsAACBAAAAgQE0wHj8Ec207AAAgQAAAIEBNMB4/9aZ3PwAAIMAAACBA6JCaO/Wmdz8AACDAAAAgwOiQmjsaJf4+AAAgQAAAIMBNMB4/GiX+PgAAIMAAACC/ln1OP40Sfz8AACBAAAAgv5Z9Tj8lfgY/AAAgQAAAID8YbyU/JX4GPwAAIMAAACA/GG8lP40Sfz8AACBAAAAgPxhvJT8Ec207AAAgwAAAID8YbyU/tgPzPgAAIMAAACC/ln1OP7YD8z4AACBAAAAgv5Z9Tj8Ec207"),
+"format": 34359742519,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"material": ExtResource("4_aqk2v"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAAAQAAAAD8AAADAAAAAwAAAAD8AAADAAAAAwAAAAL8AAADAAAAAQAAAAL8AAADAAAAAwAAAAL8AAABAAAAAwAAAAL8AAADAAAAAwAAAAD8AAADAAAAAwAAAAD8AAABAAAAAwAAAAL8AAABAAAAAQAAAAL8AAABAAAAAQAAAAL8AAADAAAAAwAAAAL8AAADAAAAAwAAAAD8AAABAAAAAwAAAAD8AAADAAAAAQAAAAD8AAADAAAAAQAAAAD8AAABAAAAAQAAAAD8AAABAAAAAQAAAAD8AAADAAAAAQAAAAL8AAADAAAAAQAAAAL8AAABAAAAAQAAAAL8AAABAAAAAwAAAAL8AAABAAAAAwAAAAD8AAABAAAAAQAAAAD8AAABA/////wAA/7//////AAD/v/////8AAP+//////wAA/78AAACA/3//vwAAAID/f/+/AAAAgP9//78AAACA/3//vwCAAAD/////AIAAAP////8AgAAA/////wCAAAD/////AID///9//78AgP///3//vwCA////f/+/AID///9//7///wCA////////AID///////8AgP///////wCA//////9//3////+//3//f////7//f/9/////v/9//3////+/")
+}]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_dwbse"]
+points = PackedVector3Array(2, 0.5, 2, 2, -0.5, 2, -2, 0.5, 2, -2, -0.5, 2, 2, 0.5, -2, 2, -0.5, -2, -2, 0.5, -2, -2, -0.5, -2)
+
+[node name="World" type="Node3D" unique_id=1791967130]
+script = ExtResource("1_f3sb7")
+
+[node name="FuncGodotMap" type="Node3D" parent="." unique_id=329314605]
+script = ExtResource("2_aqk2v")
+local_map_file = "uid://bice40jhmd43n"
+map_settings = ExtResource("3_036b0")
+build_flags = 1
+metadata/_custom_type_script = "uid://cwu5cf7a0awcd"
+
+[node name="entity_0_worldspawn" type="StaticBody3D" parent="FuncGodotMap" unique_id=439449717]
+collision_mask = 0
+
+[node name="entity_0_mesh_instance" type="MeshInstance3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=910732910]
+mesh = SubResource("ArrayMesh_036b0")
+
+[node name="entity_0_brush_0_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1431874494]
+shape = SubResource("ConvexPolygonShape3D_dwbse")
