@@ -5,6 +5,7 @@
 [ext_resource type="Resource" uid="uid://bmng1152gkgc2" path="res://Trenchbroom/godo_shooter_settings.tres" id="3_036b0"]
 [ext_resource type="Material" uid="uid://cybu8v8fjileg" path="res://Trenchbroom/Textures/Bricks/Bricks_01-512x512.tres" id="4_aqk2v"]
 [ext_resource type="PackedScene" uid="uid://3i6kjecphu2o" path="res://Scenes/Characters/player.tscn" id="5_036b0"]
+[ext_resource type="Script" uid="uid://bmfrfp1d3w5ai" path="res://Scripts/Damage/TargetDummy.cs" id="6_dwbse"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_036b0"]
 lightmap_size_hint = Vector2i(886, 906)
@@ -65,6 +66,8 @@ transform = Transform3D(1, 0, 0, 0, -0.002617996, 0.9999966, 0, -0.9999966, -0.0
 environment = SubResource("Environment_dwbse")
 
 [node name="TargetDummy" type="StaticBody3D" parent="." unique_id=839648048]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.579109, 0, -15.6653185)
+script = ExtResource("6_dwbse")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TargetDummy" unique_id=2137665340]
 mesh = SubResource("BoxMesh_036b0")

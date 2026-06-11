@@ -24,6 +24,9 @@ public partial class PlayerController : CharacterBody3D
 	[ExportGroup("Mouse Look")]
 	[Export] public float MouseSensitivity { get; set; } = 0.0025f;
 
+	[ExportGroup("Weapon")]
+	[Export] public int WeaponDamage { get; set; } = 25;
+
 	private Node3D _head = null;
 	private float _cameraPitch;
 
@@ -81,6 +84,11 @@ public partial class PlayerController : CharacterBody3D
 		GodotObject collider = _shootRay.GetCollider();
 
 		GD.Print($"Shot hit: {collider}");
+
+		if (collider is IDamageable damageable)
+		{
+			damageable.TakeDamage(WeaponDamage);
+		}
 	}
 
 	public override void _PhysicsProcess(double delta)
