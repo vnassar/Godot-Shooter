@@ -24,9 +24,6 @@ public partial class PlayerController : CharacterBody3D
 	[ExportGroup("Mouse Look")]
 	[Export] public float MouseSensitivity { get; set; } = 0.0025f;
 
-	[ExportGroup("Weapon")]
-	[Export] public int WeaponDamage { get; set; } = 25;
-
 	private Node3D _head = null;
 	private float _cameraPitch;
 
@@ -35,15 +32,16 @@ public partial class PlayerController : CharacterBody3D
 	private CapsuleShape3D _capsuleShape = null;
 	private bool _isCrouching;
 
-	private RayCast3D _shootRay = null!;
+	private Weapon _activeWeapon = null!;
+
 
 	public override void _Ready()
 	{
 		_head = GetNode<Node3D>("Head");
 
 		_collisionShape = GetNode<CollisionShape3D>("CollisionShape3D");
-		_shootRay = GetNode<RayCast3D>("Head/Camera3D/ShootRay");
-
+		
+		_activeWeapon = GetNode<Weapon>("Head/Camera3D/WeaponHolder/Rifle");
 		_capsuleShape = _collisionShape.Shape as CapsuleShape3D ?? throw new InvalidOperationException("CollisionShape3D must use a CapsuleShape3D.");
 
 		Input.MouseMode = Input.MouseModeEnum.Captured;
@@ -66,30 +64,10 @@ public partial class PlayerController : CharacterBody3D
 			Input.MouseMode = Input.MouseModeEnum.Visible;
 		}
 		
-		if (Input.IsActionPressed("shoot"))
-		{
-			Shoot();
-		}
+		if (Input.IsActionPressed("shoot")) _activeWeapon.Fire();
 	}
 
-	private void Shoot()
-	{
-		_shootRay.ForceRaycastUpdate();
-		if (!_shootRay.IsColliding())
-		{
-			GD.Print("Shot fired, but hit nothing.");
-			return;
-		}
-
-		GodotObject collider = _shootRay.GetCollider();
-
-		GD.Print($"Shot hit: {collider}");
-
-		if (collider is IDamageable damageable)
-		{
-			damageable.TakeDamage(WeaponDamage);
-		}
-	}
+	
 
 	public override void _PhysicsProcess(double delta)
 	{
