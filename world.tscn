@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://cwu5cf7a0awcd" path="res://addons/func_godot/src/map/func_godot_map.gd" id="2_aqk2v"]
 [ext_resource type="Resource" uid="uid://bmng1152gkgc2" path="res://Trenchbroom/godo_shooter_settings.tres" id="3_036b0"]
 [ext_resource type="Material" uid="uid://cybu8v8fjileg" path="res://Trenchbroom/Textures/Bricks/Bricks_01-512x512.tres" id="4_aqk2v"]
+[ext_resource type="PackedScene" uid="uid://3i6kjecphu2o" path="res://Scenes/Characters/player.tscn" id="5_036b0"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_036b0"]
 lightmap_size_hint = Vector2i(106, 138)
@@ -23,6 +24,8 @@ _surfaces = [{
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_dwbse"]
 points = PackedVector3Array(2, 0.5, 2, 2, -0.5, 2, -2, 0.5, 2, -2, -0.5, 2, 2, 0.5, -2, 2, -0.5, -2, -2, 0.5, -2, -2, -0.5, -2)
 
+[sub_resource type="Environment" id="Environment_dwbse"]
+
 [node name="World" type="Node3D" unique_id=1791967130]
 script = ExtResource("1_f3sb7")
 
@@ -41,3 +44,15 @@ mesh = SubResource("ArrayMesh_036b0")
 
 [node name="entity_0_brush_0_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1431874494]
 shape = SubResource("ConvexPolygonShape3D_dwbse")
+
+[node name="PlayerSpawn" type="Marker3D" parent="." unique_id=1661567107]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="Player" parent="." unique_id=45805491 instance=ExtResource("5_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8830372, 1.814467, -0.48278666)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1579178677]
+transform = Transform3D(1, 0, 0, 0, -0.002617996, 0.9999966, 0, -0.9999966, -0.002617996, 0, 5.953999, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1213303673]
+environment = SubResource("Environment_dwbse")
