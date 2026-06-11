@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public partial class PlayerController : CharacterBody3D
@@ -11,6 +12,14 @@ public partial class PlayerController : CharacterBody3D
 	[Export] public float GroundDeceleration { get; set; } = 14.0f;
 	[Export] public float AirAcceleration { get; set; } = 4.0f;
 
+	[ExportGroup("Crouch")]
+	[Export] public float StandingHeight { get; set; } = 1.6f;
+	[Export] public float CrouchingHeight { get; set; } = 0.9f;
+	[Export] public float StandingEyeHeight { get; set; } = 1.6f;
+	[Export] public float CrouchingEyeHeight { get; set; } = 1.0f;
+	[Export] public float CrouchSpeed { get; set; } = 2.8f;
+	[Export] public float CrouchTransitionSpeed { get; set; } = 10.0f;
+
 
 	[ExportGroup("Mouse Look")]
 	[Export] public float MouseSensitivity { get; set; } = 0.0025f;
@@ -19,10 +28,17 @@ public partial class PlayerController : CharacterBody3D
 	private float _cameraPitch;
 
 	// public const float Speed = 5.0f;
+	private CollisionShape3D _collisionShape = null;
+	private CapsuleShape3D _capsuleShape = null;
+	private bool _isCrouching;
 
 	public override void _Ready()
 	{
 		_head = GetNode<Node3D>("Head");
+
+		_collisionShape = GetNode<CollisionShape3D>("CollisionShape3D");
+
+		_capsuleShape = _collisionShape.Shape as CapsuleShape3D ?? throw new InvalidOperationException("CollisionShape3D must use a CapsuleShape3D.");
 
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 	}
@@ -49,12 +65,16 @@ public partial class PlayerController : CharacterBody3D
 	{
 		Godot.Vector3 velocity = Velocity;
 
+		HandleCrouch(delta);
 		ApplyGravity(ref velocity, delta);
 		HandleJump(ref velocity);
 		HandleMovement(ref velocity, delta);
 
 		Velocity = velocity;
 		MoveAndSlide();
+
+		float horizontalSpeed = new Vector2(Velocity.X, Velocity.Z).Length();
+		GD.Print($"Speed: {horizontalSpeed}");
 
 	}
 
@@ -86,7 +106,7 @@ public partial class PlayerController : CharacterBody3D
 		Godot.Vector3 direction = Transform.Basis * new Vector3(inputDirection.X, 0, inputDirection.Y);
 		direction = direction.Normalized();
 
-		float targetSpeed = Input.IsActionPressed("walk") ? WalkSpeed : RunSpeed;
+		float targetSpeed = GetTargetSpeed();
 
 		Vector3 targetvelocity = direction * targetSpeed;
 
@@ -112,5 +132,29 @@ public partial class PlayerController : CharacterBody3D
             deceleration * (float)delta
         );
 		}
+	}
+
+	private float GetTargetSpeed()
+	{
+		if (_isCrouching) return CrouchSpeed;
+
+		if (Input.IsActionPressed("walk")) return WalkSpeed;
+
+		return RunSpeed;
+	}
+
+	private void HandleCrouch(double delta)
+	{
+		_isCrouching = Input.IsActionPressed("crouch");
+
+		float targetCapsuleHeight = _isCrouching ? CrouchingHeight : StandingHeight;
+
+		float targetEyeHeight = _isCrouching ? CrouchingEyeHeight : StandingEyeHeight;
+
+		_capsuleShape.Height = Mathf.MoveToward(_capsuleShape.Height, targetCapsuleHeight, CrouchTransitionSpeed * (float)delta);
+
+		_head.Position = new Vector3(_head.Position.X, Mathf.MoveToward(_head.Position.Y, targetEyeHeight, CrouchTransitionSpeed * (float)delta), _head.Position.Z);
+
+		_collisionShape.Position = new Vector3(_collisionShape.Position.X, _capsuleShape.Height / 2.0f, _collisionShape.Position.Z);
 	}
 }
