@@ -7,6 +7,10 @@ public partial class PlayerController : CharacterBody3D
 	[Export] public float WalkSpeed { get; set; } = 5.0f;
 	[Export] public float JumpVelocity { get; set; } = 4.5f;
 	[Export] public float Gravity { get; set; } = 18.0f;
+	[Export] public float GroundAcceleration { get; set; } = 18.0f;
+	[Export] public float GroundDeceleration { get; set; } = 14.0f;
+	[Export] public float AirAcceleration { get; set; } = 4.0f;
+
 
 	[ExportGroup("Mouse Look")]
 	[Export] public float MouseSensitivity { get; set; } = 0.0025f;
@@ -27,6 +31,8 @@ public partial class PlayerController : CharacterBody3D
 	{
 		if (@event is InputEventMouseMotion mouseMotion)
 		{
+			RotateY(-mouseMotion.Relative.X * MouseSensitivity);
+
 			_cameraPitch -= mouseMotion.Relative.Y * MouseSensitivity;
 			_cameraPitch = Mathf.Clamp(_cameraPitch, Mathf.DegToRad(-89), Mathf.DegToRad(89));
 
@@ -80,17 +86,31 @@ public partial class PlayerController : CharacterBody3D
 		Godot.Vector3 direction = Transform.Basis * new Vector3(inputDirection.X, 0, inputDirection.Y);
 		direction = direction.Normalized();
 
-		float currentSpeed = Input.IsActionPressed("walk") ? RunSpeed : WalkSpeed;
+		float targetSpeed = Input.IsActionPressed("walk") ? WalkSpeed : RunSpeed;
+
+		Vector3 targetvelocity = direction * targetSpeed;
+
+		float acceleration = IsOnFloor() ? GroundAcceleration : AirAcceleration;
+		float deceleration = IsOnFloor() ? GroundDeceleration : AirAcceleration;
 
 		if (direction != Vector3.Zero)
 		{
-			velocity.X = direction.X * currentSpeed;
-			velocity.Z = direction.Z * currentSpeed;
+			velocity.X = Mathf.MoveToward(velocity.X, targetvelocity.X, acceleration * (float)delta);
+			velocity.Z = Mathf.MoveToward(velocity.Z, targetvelocity.Z, acceleration * (float)delta);
 		}
 		else
 		{
-			velocity.X = Mathf.MoveToward(velocity.X, 0, WalkSpeed);
-			velocity.Z = Mathf.MoveToward(velocity.Z, 0, WalkSpeed);
+			velocity.X = Mathf.MoveToward(
+            velocity.X,
+            0,
+            deceleration * (float)delta
+        );
+
+        velocity.Z = Mathf.MoveToward(
+            velocity.Z,
+            0,
+            deceleration * (float)delta
+        );
 		}
 	}
 }
