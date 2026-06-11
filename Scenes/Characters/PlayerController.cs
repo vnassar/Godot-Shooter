@@ -32,11 +32,14 @@ public partial class PlayerController : CharacterBody3D
 	private CapsuleShape3D _capsuleShape = null;
 	private bool _isCrouching;
 
+	private RayCast3D _shootRay = null!;
+
 	public override void _Ready()
 	{
 		_head = GetNode<Node3D>("Head");
 
 		_collisionShape = GetNode<CollisionShape3D>("CollisionShape3D");
+		_shootRay = GetNode<RayCast3D>("Head/Camera3D/ShootRay");
 
 		_capsuleShape = _collisionShape.Shape as CapsuleShape3D ?? throw new InvalidOperationException("CollisionShape3D must use a CapsuleShape3D.");
 
@@ -59,6 +62,25 @@ public partial class PlayerController : CharacterBody3D
 		{
 			Input.MouseMode = Input.MouseModeEnum.Visible;
 		}
+		
+		if (Input.IsActionPressed("shoot"))
+		{
+			Shoot();
+		}
+	}
+
+	private void Shoot()
+	{
+		_shootRay.ForceRaycastUpdate();
+		if (!_shootRay.IsColliding())
+		{
+			GD.Print("Shot fired, but hit nothing.");
+			return;
+		}
+
+		GodotObject collider = _shootRay.GetCollider();
+
+		GD.Print($"Shot hit: {collider}");
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -74,7 +96,6 @@ public partial class PlayerController : CharacterBody3D
 		MoveAndSlide();
 
 		float horizontalSpeed = new Vector2(Velocity.X, Velocity.Z).Length();
-		GD.Print($"Speed: {horizontalSpeed}");
 
 	}
 

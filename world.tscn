@@ -26,6 +26,10 @@ points = PackedVector3Array(2, 1.125, 2, 2, -3.3287036, 2, -25.5, 1.125, 2, -25.
 
 [sub_resource type="Environment" id="Environment_dwbse"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_036b0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dwbse"]
+
 [node name="World" type="Node3D" unique_id=1791967130]
 script = ExtResource("1_f3sb7")
 
@@ -59,3 +63,11 @@ transform = Transform3D(1, 0, 0, 0, -0.002617996, 0.9999966, 0, -0.9999966, -0.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1213303673]
 environment = SubResource("Environment_dwbse")
+
+[node name="TargetDummy" type="StaticBody3D" parent="." unique_id=839648048]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TargetDummy" unique_id=2137665340]
+mesh = SubResource("BoxMesh_036b0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TargetDummy" unique_id=798416778]
+shape = SubResource("BoxShape3D_dwbse")
